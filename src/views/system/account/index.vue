@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-07-19 12:10:57
- * @LastEditTime: 2021-07-23 10:26:47
+ * @LastEditTime: 2021-08-11 11:53:53
  * @Description: Modify here please
 -->
 <template>
@@ -14,9 +14,13 @@
         <a-button type="primary" @click="handleCreate"> 新增账号 </a-button>
       </template>
       <template #roleIds="{ record }">
-        <a-tag color="#2db7f5" style="margin-right: 10px" v-for="item in record.roleIds" :key="item._id">{{
-          item.name
-        }}</a-tag>
+        <a-tag
+          color="#2db7f5"
+          style="margin-right: 10px"
+          v-for="item in record.roleIds"
+          :key="item._id"
+          >{{ item.name }}</a-tag
+        >
       </template>
       <template #action="{ record }">
         <TableAction
@@ -98,9 +102,9 @@
       };
       // 处理删除
       const handleDelete = async (record: Recordable) => {
-        await delAdmin(record._id)
-        handleSuccess()
-        createMessage.success("删除成功!")
+        await delAdmin(record._id);
+        handleSuccess();
+        createMessage.success('删除成功!');
       };
       return {
         handleEdit,

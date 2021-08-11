@@ -4,21 +4,32 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-07-20 10:17:38
- * @LastEditTime: 2021-07-23 10:40:46
+ * @LastEditTime: 2021-08-11 14:37:36
  * @Description: Modify here please
  */
 
-import { AddAccountForm, ChangeAdminStatusQuery } from './type';
+import { AddAccountForm, ChangeAdminStatusQuery, UploadApiResult } from './type';
+import { UploadFileParams } from '/#/axios';
+import { useGlobSetting } from '/@/hooks/setting';
 import { defHttp } from '/@/utils/http/axios';
 
 enum Api {
   Admin = '/users',
   Change = '/users/changeStatus',
+  Role = '/role/account',
+  Upload = '/avatarUpload',
 }
+
+const { uploadUrl = '' } = useGlobSetting();
 
 //  获取管理員列表
 export function getAdminList(params: any) {
-  return defHttp.get({ url: Api.Admin,params });
+  return defHttp.get({ url: Api.Admin, params });
+}
+
+//  获取角色列表
+export function getAccountRole(params?: any) {
+  return defHttp.get({ url: Api.Role, params });
 }
 
 //  添加管理员
@@ -42,4 +53,14 @@ export function changeAdminStatus(params: ChangeAdminStatusQuery) {
     url: Api.Change,
     params,
   });
+}
+
+// 上传头像
+export function uploadAvatar(params: UploadFileParams) {
+  return defHttp.uploadFile<UploadApiResult>(
+    {
+      url: `${uploadUrl}/avatarUpload`,
+    },
+    params
+  );
 }

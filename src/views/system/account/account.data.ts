@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-07-20 10:39:58
- * @LastEditTime: 2021-07-23 16:44:45
+ * @LastEditTime: 2021-08-11 11:55:09
  * @Description: Modify here please
  */
 import { BasicColumn } from '/@/components/Table';
@@ -68,8 +68,8 @@ export const columns: BasicColumn[] = [
     dataIndex: 'createdAt',
     width: 180,
     customRender: ({ record }) => {
-      return dayjs(record.createdAt).format('YYYY-MM-DD HH:mm')
-    }
+      return dayjs(record.createdAt).format('YYYY-MM-DD HH:mm');
+    },
   },
 ];
 
@@ -108,12 +108,26 @@ export const formSchema: FormSchema[] = [
     field: 'email',
     label: '邮箱',
     component: 'Input',
-    rules: [{ required: true },{ message:'请输入正确的邮箱', pattern:/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ }],
+    rules: [
+      { required: true },
+      {
+        message: '请输入正确的邮箱',
+        pattern:
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      },
+    ],
   },
   {
     field: 'password',
     label: '密码',
     component: 'InputPassword',
+    required: true,
+  },
+  {
+    field: 'avatar',
+    label: '头像',
+    component: 'Input',
+    slot: 'avatar',
     required: true,
   },
   {
