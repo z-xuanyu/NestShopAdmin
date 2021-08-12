@@ -88,7 +88,7 @@ export async function getShallowMenus(): Promise<Menu[]> {
   return shallowMenuList;
 }
 
-// Get the children of the menu
+// 获取子菜单
 export async function getChildrenMenus(parentPath: string) {
   const menus = await getMenus();
   const parent = menus.find((item) => item.path === parentPath);

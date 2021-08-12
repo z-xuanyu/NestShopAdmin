@@ -1,3 +1,12 @@
+/*
+ * @Author: xuanyu
+ * @LastEditors: xuanyu
+ * @email: 969718197@qq.com
+ * @github: https://github.com/z-xuanyu
+ * @Date: 2021-08-04 14:54:27
+ * @LastEditTime: 2021-08-11 15:20:37
+ * @Description: Modify here please
+ */
 import { ErrorTypeEnum } from '/@/enums/exceptionEnum';
 import { MenuModeEnum, MenuTypeEnum } from '/@/enums/menuEnum';
 
@@ -33,6 +42,8 @@ export interface UserInfo {
   name: string;
   email: string;
   avatar: string;
+  desc?: string;
+  realName?: string;
 }
 
 export interface BeforeMiniState {
