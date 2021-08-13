@@ -4,41 +4,26 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-07-20 10:39:58
- * @LastEditTime: 2021-08-13 10:18:20
+ * @LastEditTime: 2021-08-13 14:13:33
  * @Description: Modify here please
  */
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
-import { h } from 'vue';
 import dayjs from 'dayjs';
-import { Icon } from '/@/components/Icon';
+
 export const columns: BasicColumn[] = [
   {
-    title: '菜单名称',
+    title: '分类名称',
     dataIndex: 'name',
     width: 80,
     align: 'left',
   },
   {
-    title: 'url',
-    dataIndex: 'url',
+    title: '分类图片',
+    dataIndex: 'pic',
     width: 80,
-    align: 'left',
-  },
-  {
-    title: 'icon',
-    dataIndex: 'icon',
-    width: 80,
-    align: 'left',
-    customRender: ({ record }) => {
-      return h(Icon, { icon: record.icon });
-    },
-  },
-  {
-    title: '组件名称',
-    dataIndex: 'componentName',
-    width: 80,
-    align: 'left',
+    align: 'center',
+    slots: { customRender: 'pic' },
   },
   {
     title: '排序',
@@ -68,7 +53,7 @@ export const columns: BasicColumn[] = [
 export const searchFormSchema: FormSchema[] = [
   {
     field: 'name',
-    label: '菜单名称',
+    label: '分类名称',
     component: 'Input',
     labelWidth: 80,
     colProps: { span: 4 },
@@ -78,11 +63,11 @@ export const searchFormSchema: FormSchema[] = [
 export const formSchema: FormSchema[] = [
   {
     field: 'name',
-    label: '菜单名称',
+    label: '分类名称',
     component: 'Input',
     required: true,
     componentProps: {
-      placeholder: '请输入菜单名称',
+      placeholder: '请输入分类名称',
     },
   },
   {
@@ -100,27 +85,10 @@ export const formSchema: FormSchema[] = [
     },
   },
   {
-    field: 'url',
-    label: '路由URL',
+    field: 'pic',
+    label: '分类图',
     component: 'Input',
-    required: true,
-    componentProps: {
-      placeholder: '请输入路由URL',
-    },
-  },
-  {
-    field: 'componentName',
-    label: '组件名称',
-    component: 'Input',
-    required: true,
-    componentProps: {
-      placeholder: '请输入菜单关联组件名称',
-    },
-  },
-  {
-    field: 'icon',
-    label: '菜单图标',
-    component: 'IconPicker',
+    slot: 'pic',
     required: true,
   },
   {
@@ -130,18 +98,6 @@ export const formSchema: FormSchema[] = [
     required: true,
     componentProps: {
       placeholder: '请输入排序',
-    },
-  },
-  {
-    field: 'keepAlive',
-    label: '是否缓存',
-    component: 'RadioButtonGroup',
-    defaultValue: '0',
-    componentProps: {
-      options: [
-        { label: '否', value: 0 },
-        { label: '是', value: 1 },
-      ],
     },
   },
 ];

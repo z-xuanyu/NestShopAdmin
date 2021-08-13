@@ -1,3 +1,12 @@
+/*
+ * @Author: xuanyu
+ * @LastEditors: xuanyu
+ * @email: 969718197@qq.com
+ * @github: https://github.com/z-xuanyu
+ * @Date: 2021-08-04 14:54:26
+ * @LastEditTime: 2021-08-13 16:01:09
+ * @Description: Modify here please
+ */
 // Used to configure the general configuration of some components without modifying the components
 
 import type { SorterResult } from '../components/Table';
@@ -9,7 +18,7 @@ export default {
     // support xxx.xxx.xxx
     fetchSetting: {
       // The field name of the current page passed to the background
-      pageField: 'page',
+      pageField: 'pageNumber',
       // The number field name of each page displayed in the background
       sizeField: 'pageSize',
       // Field name of the form data returned by the interface

@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-07-19 12:10:57
- * @LastEditTime: 2021-07-23 10:26:47
+ * @LastEditTime: 2021-08-13 10:15:29
  * @Description: Modify here please
 -->
 <template>
@@ -32,7 +32,7 @@
         />
       </template>
     </BasicTable>
-    <MenuModal @register="registerModal" @success="handleSuccess"/>
+    <MenuModal @register="registerModal" @success="handleSuccess" />
   </div>
 </template>
 <script lang="ts">
@@ -41,7 +41,7 @@
   import { columns, searchFormSchema } from './menu.data';
   import { getMenuTree, delMenu } from '/@/api/system/menu';
   import { useModal } from '/@/components/Modal';
-  import MenuModal from './MenuModal.vue'
+  import MenuModal from './MenuModal.vue';
   import { useMessage } from '/@/hooks/web/useMessage';
   export default defineComponent({
     name: 'Account',
@@ -92,9 +92,9 @@
       };
       // 处理删除
       const handleDelete = async (record: Recordable) => {
-        await delMenu(record._id)
+        await delMenu(record._id);
         reload();
-        createMessage.success("删除成功!")
+        createMessage.success('删除成功!');
       };
       return {
         handleEdit,

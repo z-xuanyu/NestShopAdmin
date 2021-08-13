@@ -4,14 +4,12 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-07-20 10:38:11
- * @LastEditTime: 2021-07-23 17:49:35
+ * @LastEditTime: 2021-08-13 14:02:57
  * @Description: Modify here please
 -->
 <template>
   <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
-    <BasicForm @register="registerForm">
-      
-    </BasicForm>
+    <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
 <script lang="ts">
@@ -55,7 +53,7 @@
         const menuTree = await getMenuTree();
         updateSchema({
           field: 'parentId',
-          componentProps: { treeData: menuTree},
+          componentProps: { treeData: menuTree },
         });
       });
       const getTitle = computed(() => (!unref(isUpdate) ? '新增菜单' : '编辑菜单'));
@@ -65,12 +63,12 @@
           setModalProps({ confirmLoading: true });
           // 新增
           if (!unref(isUpdate)) {
-            await addMenu(values)
-            createMessage.success("添加成功!")
+            await addMenu(values);
+            createMessage.success('添加成功!');
           } else {
             // 编辑
-            await updateMenu(state.menuId,values)
-            createMessage.success("编辑成功!")
+            await updateMenu(state.menuId, values);
+            createMessage.success('编辑成功!');
           }
           closeModal();
           emit('success');
