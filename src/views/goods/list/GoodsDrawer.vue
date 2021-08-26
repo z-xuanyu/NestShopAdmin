@@ -4,14 +4,21 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-25 15:38:29
- * @LastEditTime: 2021-08-26 11:15:32
+ * @LastEditTime: 2021-08-26 17:31:41
  * @Description: Modify here please
 -->
 <template>
-  <BasicDrawer v-bind="$attrs" title="添加商品" width="50%" showFooter @ok="handleOk">
-    <BasicForm @register="register">
+  <BasicDrawer
+    v-bind="$attrs"
+    @register="registerDrawer"
+    :title="getTitle"
+    width="50%"
+    showFooter
+    @ok="handleSubmit"
+  >
+    <BasicForm @register="registerForm">
       <!-- 商品主图 -->
-      <template #goods_pic="{ model, field }">
+      <template #coverImg="{ model, field }">
         <a-upload
           v-model:file-list="fileList"
           list-type="picture-card"
@@ -30,10 +37,10 @@
         </a-upload>
       </template>
       <!-- 商品banner图 -->
-      <template #goods_banner>
+      <template #bannerPathList>
         <div class="clearfix">
           <a-upload
-            :customRequest="handleImageUploadRequest"
+            :customRequest="handleBannerImageUploadRequest"
             list-type="picture-card"
             v-model:file-list="goodsBannerFileList"
             @preview="handlePreview"
@@ -52,8 +59,8 @@
   </BasicDrawer>
 </template>
 <script lang="ts">
-  import { defineComponent, ref } from 'vue';
-  import { BasicDrawer } from '/@/components/Drawer';
+  import { defineComponent, ref, unref, computed, watch } from 'vue';
+  import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   import { BasicForm, useForm } from '/@/components/Form/index';
   import { goodsDrawerFormSchema } from './goods.data';
   import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
@@ -61,6 +68,7 @@
   import { FileInfo, FileItem } from '../category/type';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { uploadAvatar } from '/@/api/system/account';
+  import { getGoodsCategories } from '/@/api/goods';
   interface GoodsBnanerFileItem {
     uid: string;
     name?: string;
@@ -74,9 +82,11 @@
   export default defineComponent({
     name: 'GoodsDrawer',
     components: { BasicDrawer, BasicForm, PlusOutlined, LoadingOutlined, [Upload.name]: Upload },
-    setup() {
+    emits: ['success', 'register'],
+    setup(_, { emit }) {
+      const isUpdate = ref(true);
       const { createMessage } = useMessage();
-      const [register, { resetFields, setFieldsValue }] = useForm({
+      const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
         labelWidth: 120,
         showResetButton: false,
         showSubmitButton: false,
@@ -85,15 +95,33 @@
           span: 24,
         },
       });
+      const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
+        resetFields();
+        setDrawerProps({ confirmLoading: false });
+        isUpdate.value = !!data?.isUpdate;
+        if (unref(isUpdate)) {
+          setFieldsValue({
+            ...data.record,
+          });
+        }
 
-      // 图片上传自定义请求
+        // 商品分类
+        const goodsCategories = await getGoodsCategories();
+        updateSchema({
+          field: 'categories',
+          componentProps: { treeData: goodsCategories.items },
+        });
+      });
+
+      const getTitle = computed(() => (!unref(isUpdate) ? '添加商品' : '编辑商品'));
+      // 商品主图上传
       const handleImageUploadRequest = async (file) => {
         const res = await uploadAvatar({ file: file.file });
         setFieldsValue({
-          pic: res.data.result.url,
+          coverImg: res.data.result.url,
         });
       };
-      // 图片上传
+      // 图片上传之前处理
       const beforeUpload = (file: FileItem) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
@@ -105,7 +133,6 @@
         }
         return isJpgOrPng && isLt2M;
       };
-
       const fileList = ref([]);
       const loading = ref<boolean>(false);
       // 上传改变
@@ -126,20 +153,7 @@
       // 商品轮播图
       const previewVisible = ref<boolean>(false); // 是否显示商品预览图
       const previewImage = ref<string | undefined>(''); // 商品预览图
-      const goodsBannerFileList = ref<GoodsBnanerFileItem[]>([
-        {
-          uid: '-1',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        },
-        {
-          uid: '-2',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        },
-      ]);
+      const goodsBannerFileList = ref<GoodsBnanerFileItem[]>([]); // 商品轮播图
       const handlePreviewCancel = () => {
         previewVisible.value = false;
       };
@@ -147,16 +161,47 @@
         previewImage.value = file.url;
         previewVisible.value = true;
       };
+      // 商品轮播图上传
+      const handleBannerImageUploadRequest = async (file) => {
+        const res = await uploadAvatar({ file: file.file });
+        goodsBannerFileList.value.push({
+          uid: new Date().getTime().toString(),
+          status: 'done',
+          url: res.data.result.url,
+        });
+        goodsBannerFileList.value = goodsBannerFileList.value.filter((item) => item.url);
+        console.log(goodsBannerFileList.value, 45456);
+      };
+      // 监听商品轮播图变化
+      watch(
+        () => goodsBannerFileList.value,
+        () => {
+          setFieldsValue({
+            bannerPathList: goodsBannerFileList.value.map((item) => item.url),
+          });
+        }
+      );
+      // 保存提交商品表单信息
+      const handleSubmit = async () => {
+        try {
+          const values = await validate();
+          setDrawerProps({ confirmLoading: true });
+          // TODO custom api
+          console.log(values);
+          closeDrawer();
+          emit('success');
+        } finally {
+          setDrawerProps({ confirmLoading: false });
+        }
+      };
       return {
-        handleOk: () => {
-          console.log('=====================');
-          console.log('ok');
-          console.log('======================');
-        },
-        register,
+        handleSubmit,
+        registerForm,
+        registerDrawer,
         resetFields,
         beforeUpload,
         handleImageUploadRequest,
+        handleBannerImageUploadRequest,
         fileList,
         loading,
         handleUploadChange,
@@ -165,6 +210,7 @@
         goodsBannerFileList,
         handlePreviewCancel,
         handlePreview,
+        getTitle,
       };
     },
   });

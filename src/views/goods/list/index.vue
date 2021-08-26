@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-12 14:50:41
- * @LastEditTime: 2021-08-25 15:47:06
+ * @LastEditTime: 2021-08-26 15:33:24
  * @Description: Modify here please
 -->
 <template>
@@ -32,7 +32,7 @@
         />
       </template>
     </BasicTable>
-    <GoodsDrawer @register="handleGoodsDrawer" />
+    <GoodsDrawer @register="registerDrawer" />
   </div>
 </template>
 
@@ -72,14 +72,19 @@
           fixed: undefined,
         },
       });
+      const [registerDrawer, { openDrawer }] = useDrawer();
+      function handleCreate() {
+        openDrawer(true, {
+          isUpdate: false,
+        });
+      }
       const del = () => {
         reload();
       };
-      const [handleGoodsDrawer, { openDrawer: handleCreate }] = useDrawer();
       return {
         registerTable,
+        registerDrawer,
         handleCreate,
-        handleGoodsDrawer,
         del,
       };
     },

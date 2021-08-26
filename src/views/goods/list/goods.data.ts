@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-13 16:19:45
- * @LastEditTime: 2021-08-26 10:11:28
+ * @LastEditTime: 2021-08-26 18:07:03
  * @Description: Modify here please
  */
 import { BasicColumn } from '/@/components/Table';
@@ -22,13 +22,13 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '商品图片',
-    dataIndex: 'pic',
+    dataIndex: 'coverImg',
     width: 80,
     align: 'center',
   },
   {
     title: '商品分类',
-    dataIndex: 'category',
+    dataIndex: 'categories',
     width: 80,
     align: 'center',
   },
@@ -58,7 +58,7 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '热门推荐',
-    dataIndex: 'hot',
+    dataIndex: 'isRecommend',
     width: 80,
     align: 'left',
   },
@@ -105,6 +105,9 @@ export const goodsDrawerFormSchema: FormSchema[] = [
     colProps: {
       span: 16,
     },
+    componentProps: {
+      placeholder: '请输入商品名称',
+    },
     required: true,
   },
   {
@@ -114,30 +117,39 @@ export const goodsDrawerFormSchema: FormSchema[] = [
     colProps: {
       span: 16,
     },
+    componentProps: {
+      placeholder: '请输入商品副标题',
+    },
     required: true,
   },
   {
-    field: 'goods_pic',
+    field: 'coverImg',
     component: 'Input',
     label: '商品主图',
     colProps: {
       span: 16,
     },
-    slot: 'goods_pic',
+    slot: 'coverImg',
+    componentProps: {
+      placeholder: '请上传商品主图',
+    },
     required: true,
   },
   {
-    field: 'goods_banner',
+    field: 'bannerPathList',
     component: 'Input',
     label: '商品轮播图',
     colProps: {
       span: 16,
     },
     required: true,
-    slot: 'goods_banner',
+    slot: 'bannerPathList',
+    componentProps: {
+      placeholder: '请上传商品轮播图',
+    },
   },
   {
-    field: 'goods_category',
+    field: 'categories',
     label: '商品分类',
     component: 'TreeSelect',
     colProps: {
@@ -155,34 +167,43 @@ export const goodsDrawerFormSchema: FormSchema[] = [
     required: true,
   },
   {
-    field: 'goods_price',
+    field: 'price',
     component: 'InputNumber',
     label: '原价格',
     colProps: {
       span: 16,
     },
+    componentProps: {
+      placeholder: '请输入价格',
+    },
     required: true,
   },
   {
-    field: 'goods_z_price',
+    field: 'discountPrice',
     component: 'InputNumber',
     label: '折扣价',
     colProps: {
       span: 16,
     },
+    componentProps: {
+      placeholder: '请输入折扣价',
+    },
     required: true,
   },
   {
-    field: 'goods_k',
+    field: 'stock',
     component: 'InputNumber',
     label: '库存',
     colProps: {
       span: 16,
     },
+    componentProps: {
+      placeholder: '请输入库存',
+    },
     required: true,
   },
   {
-    field: 'goods_new',
+    field: 'isNewest',
     component: 'Switch',
     label: '是否新品',
     colProps: {
@@ -191,7 +212,7 @@ export const goodsDrawerFormSchema: FormSchema[] = [
     required: true,
   },
   {
-    field: 'goods_hot',
+    field: 'isRecommend',
     component: 'Switch',
     label: '是否热门',
     colProps: {
@@ -200,7 +221,7 @@ export const goodsDrawerFormSchema: FormSchema[] = [
     required: true,
   },
   {
-    field: 'goods_status',
+    field: 'status',
     component: 'Switch',
     label: '是否上架',
     colProps: {
@@ -209,10 +230,10 @@ export const goodsDrawerFormSchema: FormSchema[] = [
     required: true,
   },
   {
-    field: 'goods_desc',
+    field: 'desc',
     component: 'Input',
     label: '商品详情',
-    defaultValue: 'defaultValue',
+    defaultValue: '商品详情',
     rules: [{ required: true }],
     render: ({ model, field }) => {
       return h(Tinymce, {
@@ -220,6 +241,7 @@ export const goodsDrawerFormSchema: FormSchema[] = [
         onChange: (value: string) => {
           model[field] = value;
         },
+        height: 600,
       });
     },
   },

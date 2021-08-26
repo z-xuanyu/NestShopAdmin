@@ -1,11 +1,22 @@
+<!--
+ * @Author: xuanyu
+ * @LastEditors: xuanyu
+ * @email: 969718197@qq.com
+ * @github: https://github.com/z-xuanyu
+ * @Date: 2021-08-04 14:54:26
+ * @LastEditTime: 2021-08-26 18:05:02
+ * @Description: Modify here please
+-->
 <template>
   <div :class="[prefixCls, { fullscreen }]">
     <Upload
       name="file"
       multiple
       @change="handleChange"
-      :action="uploadUrl"
+      :action="uploadUrl + '/avatarUpload'"
       :showUploadList="false"
+      ,
+      :headers="headers"
       accept=".jpg,.jpeg,.gif,.png,.webp"
     >
       <a-button type="primary" v-bind="{ ...getButtonProps }">
@@ -21,7 +32,7 @@
   import { useDesign } from '/@/hooks/web/useDesign';
   import { useGlobSetting } from '/@/hooks/setting';
   import { useI18n } from '/@/hooks/web/useI18n';
-
+  import { getToken } from '/@/utils/auth';
   export default defineComponent({
     name: 'TinymceImageUpload',
     components: { Upload },
@@ -48,11 +59,14 @@
           disabled,
         };
       });
-
+      let headers = {
+        Authorization: `Bearer ${getToken()}`,
+      };
       function handleChange(info: Recordable) {
+        console.log(info, '富文本图片');
         const file = info.file;
         const status = file?.status;
-        const url = file?.response?.url;
+        const url = file?.response?.result.url;
         const name = file?.name;
 
         if (status === 'uploading') {
@@ -75,6 +89,7 @@
         uploadUrl,
         t,
         getButtonProps,
+        headers,
       };
     },
   });
