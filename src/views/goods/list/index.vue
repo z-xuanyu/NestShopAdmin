@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-12 14:50:41
- * @LastEditTime: 2021-08-13 16:31:07
+ * @LastEditTime: 2021-08-25 15:47:06
  * @Description: Modify here please
 -->
 <template>
@@ -32,6 +32,7 @@
         />
       </template>
     </BasicTable>
+    <GoodsDrawer @register="handleGoodsDrawer" />
   </div>
 </template>
 
@@ -39,11 +40,14 @@
   import { defineComponent } from 'vue';
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { columns, searchFormSchema } from './goods.data';
+  import { useDrawer } from '/@/components/Drawer';
+  import GoodsDrawer from './GoodsDrawer.vue';
   export default defineComponent({
     name: 'GoodsList',
     components: {
       BasicTable,
       TableAction,
+      GoodsDrawer,
     },
     setup() {
       const [registerTable, { reload }] = useTable({
@@ -68,13 +72,15 @@
           fixed: undefined,
         },
       });
-      // 添加
-      const handleCreate = () => {
+      const del = () => {
         reload();
       };
+      const [handleGoodsDrawer, { openDrawer: handleCreate }] = useDrawer();
       return {
         registerTable,
         handleCreate,
+        handleGoodsDrawer,
+        del,
       };
     },
   });
