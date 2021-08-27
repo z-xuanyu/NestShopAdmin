@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-13 16:19:45
- * @LastEditTime: 2021-08-27 16:10:59
+ * @LastEditTime: 2021-08-27 16:32:17
  * @Description: Modify here please
  */
 import { BasicColumn } from '/@/components/Table';
@@ -25,7 +25,7 @@ export const columns: BasicColumn[] = [
   {
     title: '商品名称',
     dataIndex: 'name',
-    width: 160,
+    width: 200,
     align: 'center',
   },
   {
