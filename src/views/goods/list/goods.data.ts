@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-13 16:19:45
- * @LastEditTime: 2021-08-26 18:07:03
+ * @LastEditTime: 2021-08-27 16:10:59
  * @Description: Modify here please
  */
 import { BasicColumn } from '/@/components/Table';
@@ -12,18 +12,20 @@ import { FormSchema } from '/@/components/Table';
 import dayjs from 'dayjs';
 import { Tinymce } from '/@/components/Tinymce/index';
 import { h } from 'vue';
+import { Switch } from 'ant-design-vue';
 
 export const columns: BasicColumn[] = [
-  {
-    title: '商品名称',
-    dataIndex: 'name',
-    width: 80,
-    align: 'left',
-  },
   {
     title: '商品图片',
     dataIndex: 'coverImg',
     width: 80,
+    align: 'left',
+    slots: { customRender: 'coverImg' },
+  },
+  {
+    title: '商品名称',
+    dataIndex: 'name',
+    width: 160,
     align: 'center',
   },
   {
@@ -31,6 +33,7 @@ export const columns: BasicColumn[] = [
     dataIndex: 'categories',
     width: 80,
     align: 'center',
+    slots: { customRender: 'categories' },
   },
   {
     title: '价格',
@@ -60,13 +63,91 @@ export const columns: BasicColumn[] = [
     title: '热门推荐',
     dataIndex: 'isRecommend',
     width: 80,
-    align: 'left',
+    align: 'center',
+    customRender: ({ record }) => {
+      if (!Reflect.has(record, 'pendingStatus')) {
+        record.pendingStatus = false;
+      }
+      return h(Switch, {
+        checked: record.isRecommend,
+        checkedChildren: '是',
+        unCheckedChildren: '否',
+        loading: record.pendingStatus,
+        // onChange(checked: boolean) {
+        //   record.pendingStatus = true;
+        //   const { createMessage } = useMessage();
+        //   changeAdminStatus({ adminId: record._id, status: checked })
+        //     .then(() => {
+        //       record.status = checked;
+        //       createMessage.success(`状态更改成功!`);
+        //     })
+        //     .catch(() => {})
+        //     .finally(() => {
+        //       record.pendingStatus = false;
+        //     });
+        // },
+      });
+    },
+  },
+  {
+    title: '是否新品',
+    dataIndex: 'isNewest',
+    width: 80,
+    align: 'center',
+    customRender: ({ record }) => {
+      if (!Reflect.has(record, 'pendingStatus')) {
+        record.pendingStatus = false;
+      }
+      return h(Switch, {
+        checked: record.isNewest,
+        checkedChildren: '是',
+        unCheckedChildren: '否',
+        loading: record.pendingStatus,
+        // onChange(checked: boolean) {
+        //   record.pendingStatus = true;
+        //   const { createMessage } = useMessage();
+        //   changeAdminStatus({ adminId: record._id, status: checked })
+        //     .then(() => {
+        //       record.status = checked;
+        //       createMessage.success(`状态更改成功!`);
+        //     })
+        //     .catch(() => {})
+        //     .finally(() => {
+        //       record.pendingStatus = false;
+        //     });
+        // },
+      });
+    },
   },
   {
     title: '是否上架',
     dataIndex: 'status',
     width: 80,
-    align: 'left',
+    align: 'center',
+    customRender: ({ record }) => {
+      if (!Reflect.has(record, 'pendingStatus')) {
+        record.pendingStatus = false;
+      }
+      return h(Switch, {
+        checked: record.status,
+        checkedChildren: '上架',
+        unCheckedChildren: '下架',
+        loading: record.pendingStatus,
+        // onChange(checked: boolean) {
+        //   record.pendingStatus = true;
+        //   const { createMessage } = useMessage();
+        //   changeAdminStatus({ adminId: record._id, status: checked })
+        //     .then(() => {
+        //       record.status = checked;
+        //       createMessage.success(`状态更改成功!`);
+        //     })
+        //     .catch(() => {})
+        //     .finally(() => {
+        //       record.pendingStatus = false;
+        //     });
+        // },
+      });
+    },
   },
   {
     title: '创建时间',
@@ -89,7 +170,7 @@ export const columns: BasicColumn[] = [
 export const searchFormSchema: FormSchema[] = [
   {
     field: 'name',
-    label: '分类名称',
+    label: '商品名称',
     component: 'Input',
     labelWidth: 80,
     colProps: { span: 4 },
@@ -195,10 +276,23 @@ export const goodsDrawerFormSchema: FormSchema[] = [
     component: 'InputNumber',
     label: '库存',
     colProps: {
-      span: 16,
+      span: 24,
     },
     componentProps: {
       placeholder: '请输入库存',
+    },
+    required: true,
+  },
+  {
+    field: 'unit',
+    component: 'Input',
+    label: '单位',
+    colProps: {
+      span: 4,
+    },
+    defaultValue: '件',
+    componentProps: {
+      placeholder: '请输入商品单位',
     },
     required: true,
   },
@@ -207,9 +301,10 @@ export const goodsDrawerFormSchema: FormSchema[] = [
     component: 'Switch',
     label: '是否新品',
     colProps: {
-      span: 16,
+      span: 24,
     },
     required: true,
+    defaultValue: true,
   },
   {
     field: 'isRecommend',
@@ -219,6 +314,7 @@ export const goodsDrawerFormSchema: FormSchema[] = [
       span: 16,
     },
     required: true,
+    defaultValue: true,
   },
   {
     field: 'status',
@@ -228,6 +324,7 @@ export const goodsDrawerFormSchema: FormSchema[] = [
       span: 16,
     },
     required: true,
+    defaultValue: true,
   },
   {
     field: 'desc',

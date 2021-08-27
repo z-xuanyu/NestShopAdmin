@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-25 15:38:29
- * @LastEditTime: 2021-08-26 17:31:41
+ * @LastEditTime: 2021-08-27 16:08:09
  * @Description: Modify here please
 -->
 <template>
@@ -68,7 +68,7 @@
   import { FileInfo, FileItem } from '../category/type';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { uploadAvatar } from '/@/api/system/account';
-  import { getGoodsCategories } from '/@/api/goods';
+  import { getGoodsCategories, addGoods, updateGoods } from '/@/api/goods';
   interface GoodsBnanerFileItem {
     uid: string;
     name?: string;
@@ -86,6 +86,8 @@
     setup(_, { emit }) {
       const isUpdate = ref(true);
       const { createMessage } = useMessage();
+      let goodsId = ref<string>('');
+      const goodsBannerFileList = ref<GoodsBnanerFileItem[]>([]); // 商品轮播图
       const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
         labelWidth: 120,
         showResetButton: false,
@@ -96,12 +98,26 @@
         },
       });
       const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
+        goodsBannerFileList.value = [];
         resetFields();
         setDrawerProps({ confirmLoading: false });
         isUpdate.value = !!data?.isUpdate;
         if (unref(isUpdate)) {
+          // 商品id
+          goodsId.value = data.record._id;
+          // 轮播图
+          goodsBannerFileList.value = data.record.bannerPathList.map(
+            (item: string, index: number) => {
+              return {
+                uid: index.toString(),
+                status: 'done',
+                url: item,
+              };
+            }
+          );
           setFieldsValue({
             ...data.record,
+            categories: data.record.categories._id,
           });
         }
 
@@ -153,7 +169,6 @@
       // 商品轮播图
       const previewVisible = ref<boolean>(false); // 是否显示商品预览图
       const previewImage = ref<string | undefined>(''); // 商品预览图
-      const goodsBannerFileList = ref<GoodsBnanerFileItem[]>([]); // 商品轮播图
       const handlePreviewCancel = () => {
         previewVisible.value = false;
       };
@@ -170,7 +185,6 @@
           url: res.data.result.url,
         });
         goodsBannerFileList.value = goodsBannerFileList.value.filter((item) => item.url);
-        console.log(goodsBannerFileList.value, 45456);
       };
       // 监听商品轮播图变化
       watch(
@@ -186,8 +200,15 @@
         try {
           const values = await validate();
           setDrawerProps({ confirmLoading: true });
-          // TODO custom api
-          console.log(values);
+          if (!unref(isUpdate)) {
+            // 添加商品 api
+            await addGoods(values);
+            createMessage.success('添加成功!');
+          } else {
+            // 编辑商品 api
+            await updateGoods(goodsId.value, values);
+            createMessage.success('编辑成功!');
+          }
           closeDrawer();
           emit('success');
         } finally {
