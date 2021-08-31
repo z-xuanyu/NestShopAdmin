@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-11 16:09:00
- * @LastEditTime: 2021-08-27 16:52:38
+ * @LastEditTime: 2021-08-31 10:30:15
  * @Description: Modify here please
  */
 import { BasicColumn } from '/@/components/Table';
@@ -66,20 +66,27 @@ export const searchFormSchema: FormSchema[] = [
 export const formSchema: FormSchema[] = [
   {
     field: 'name',
-    label: '导航名称',
+    label: '名称',
     component: 'Input',
     required: true,
   },
   {
-    field: 'phone',
-    label: '手机号',
+    field: 'icon',
+    label: '图标',
     component: 'Input',
     rules: [{ required: true }],
+    slot: 'icon',
   },
   {
-    field: 'password',
-    label: '密码',
-    component: 'InputPassword',
+    field: 'url',
+    label: '链接',
+    component: 'Input',
+    required: true,
+  },
+  {
+    field: 'sort',
+    label: '排序',
+    component: 'InputNumber',
     required: true,
   },
 ];
