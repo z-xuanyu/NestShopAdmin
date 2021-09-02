@@ -4,51 +4,59 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-27 16:36:12
- * @LastEditTime: 2021-08-31 11:03:42
+ * @LastEditTime: 2021-09-02 10:49:15
  * @Description: Modify here please
 -->
 <template>
-  <BasicTable @register="registerTable">
-    <template #toolbar>
-      <a-button type="primary" @click="handleCreate"> 新增导航 </a-button>
-    </template>
-    <template #action="{ record }">
-      <TableAction
-        :actions="[
-          {
-            icon: 'clarity:note-edit-line',
-            onClick: handleEdit.bind(null, record),
-          },
-          {
-            icon: 'ant-design:delete-outlined',
-            color: 'error',
-            popConfirm: {
-              title: '是否确认删除',
-              confirm: handleDelete.bind(null, record),
+  <div class="navigator-page">
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button type="primary" @click="handleCreate"> 新增导航 </a-button>
+      </template>
+      <template #icon="{ record }">
+        <TableImg :size="60" :imgList="[record.icon]" />
+      </template>
+      <template #action="{ record }">
+        <TableAction
+          :actions="[
+            {
+              icon: 'clarity:note-edit-line',
+              onClick: handleEdit.bind(null, record),
             },
-          },
-        ]"
-      />
-    </template>
-  </BasicTable>
-  <NavigatorModal @register="registerModal" @success="handleSuccess" />
+            {
+              icon: 'ant-design:delete-outlined',
+              color: 'error',
+              popConfirm: {
+                title: '是否确认删除',
+                confirm: handleDelete.bind(null, record),
+              },
+            },
+          ]"
+        />
+      </template>
+    </BasicTable>
+    <NavigatorModal @register="registerModal" @success="handleSuccess" />
+  </div>
 </template>
 
-<script>
+<script lang="ts">
   import { defineComponent } from 'vue';
-  import { BasicTable, useTable, TableAction } from '/@/components/Table';
+  import { BasicTable, useTable, TableAction, TableImg } from '/@/components/Table';
   import { useModal } from '/@/components/Modal';
   import NavigatorModal from './NavigatorModal.vue';
-  import { getNavigators } from '/@/api/navigator';
+  import { getNavigators, delNavigator } from '/@/api/navigator';
   import { columns, searchFormSchema } from './navigator.data';
+  import { useMessage } from '/@/hooks/web/useMessage';
   export default defineComponent({
     name: 'Navigator',
     components: {
       NavigatorModal,
       BasicTable,
       TableAction,
+      TableImg,
     },
     setup() {
+      const { createMessage } = useMessage();
       // Modal弹出层配置
       const [registerModal, { openModal }] = useModal();
       // 表格配置
@@ -81,6 +89,19 @@
           isUpdate: false,
         });
       };
+      // 编辑导航
+      const handleEdit = (record: Recordable) => {
+        openModal(true, {
+          record,
+          isUpdate: true,
+        });
+      };
+      // 删除
+      const handleDelete = async (record: Recordable) => {
+        await delNavigator(record._id);
+        handleSuccess();
+        createMessage.success('删除成功!');
+      };
       // 成功请求
       const handleSuccess = () => {
         reload();
@@ -90,6 +111,8 @@
         handleSuccess,
         registerModal,
         handleCreate,
+        handleEdit,
+        handleDelete,
       };
     },
   });

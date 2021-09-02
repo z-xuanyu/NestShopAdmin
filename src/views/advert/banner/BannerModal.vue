@@ -3,15 +3,15 @@
  * @LastEditors: xuanyu
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
- * @Date: 2021-08-31 10:00:42
- * @LastEditTime: 2021-09-02 10:43:56
+ * @Date: 2021-09-01 14:17:59
+ * @LastEditTime: 2021-09-01 17:52:42
  * @Description: Modify here please
 -->
 <template>
   <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
     <BasicForm @register="registerForm">
-      <!-- icon图片 -->
-      <template #icon="{ model, field }">
+      <!-- 图片 -->
+      <template #pic="{ model, field }">
         <a-upload
           v-model:file-list="fileList"
           name="avatar"
@@ -30,36 +30,51 @@
           </div>
         </a-upload>
       </template>
+      <!-- 关联商品 -->
+      <template #commodityId="{ model, field }">
+        <ApiSelect
+          :api="getGoodsList"
+          showSearch
+          placeholder="请选择关联商品"
+          v-model:value="model[field]"
+          :filterOption="false"
+          resultField="items"
+          labelField="name"
+          valueField="_id"
+        />
+      </template>
     </BasicForm>
   </BasicModal>
 </template>
 <script lang="ts">
   import { defineComponent, ref, unref, computed } from 'vue';
   import { BasicModal, useModalInner } from '/@/components/Modal';
-  import { BasicForm, useForm } from '/@/components/Form/index';
-  import { formSchema } from './navigator.data';
+  import { BasicForm, useForm, ApiSelect } from '/@/components/Form/index';
+  import { formSchema } from './banner.data';
   import { uploadAvatar } from '/@/api/system/account';
+  import { getGoodsList } from '/@/api/goods';
+  import { addBanner, updateBanner } from '/@/api/banner';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
   import { Upload } from 'ant-design-vue';
   import { FileInfo, FileItem } from '/#/axios';
-  import { addNavigator, updateNavigator } from '/@/api/navigator';
   export default defineComponent({
-    name: 'NavigatorModal',
+    name: 'BannerModal',
     components: {
       BasicModal,
       BasicForm,
       PlusOutlined,
       LoadingOutlined,
+      ApiSelect,
       [Upload.name]: Upload,
     },
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const isUpdate = ref(true);
       const { createMessage } = useMessage();
-      let navigatorId = '';
+      let bannerId = ''; // bannerId
       // 表单配置
-      const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
+      const [registerForm, { resetFields, setFieldsValue, validate, updateSchema }] = useForm({
         labelWidth: 80,
         schemas: formSchema,
         showActionButtonGroup: false,
@@ -69,19 +84,29 @@
         resetFields();
         setModalProps({ confirmLoading: false });
         isUpdate.value = !!data?.isUpdate;
+        // 编辑
         if (unref(isUpdate)) {
-          navigatorId = data.record._id;
+          updateSchema({
+            field: 'commodityId',
+            show: data.record.type == 3 ? true : false,
+          });
+          updateSchema({
+            field: 'targetUrl',
+            show: data.record.type == 2 ? true : false,
+          });
+          bannerId = data.record._id;
           setFieldsValue({
             ...data.record,
+            commodityId: data.record.commodityId._id,
           });
         }
       });
-      const getTitle = computed(() => (!unref(isUpdate) ? '新增导航' : '编辑导航'));
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增Bnaner' : '编辑Banner'));
       // 图片上传自定义请求
       const handleImageUploadRequest = async (file) => {
         const res = await uploadAvatar({ file: file.file });
         setFieldsValue({
-          icon: res.data.result.url,
+          pic: res.data.result.url,
         });
       };
       // 图片上传前处理文件类型和大小
@@ -109,7 +134,7 @@
         }
         if (info.file.status === 'error') {
           loading.value = false;
-          createMessage.error('图片上传失败！');
+          createMessage.error('upload error');
         }
       };
       // 提交
@@ -117,12 +142,14 @@
         try {
           const values = await validate();
           setModalProps({ confirmLoading: true });
+          // 新增
+          console.log(values);
           if (!unref(isUpdate)) {
-            // 添加导航
-            await addNavigator(values);
+            // 添加Banner
+            await addBanner(values);
           } else {
-            // 编辑导航
-            await updateNavigator(navigatorId, values);
+            // 编辑Banner
+            await updateBanner(bannerId, values);
           }
           closeModal();
           emit('success');
@@ -140,6 +167,7 @@
         handleUploadChange,
         fileList,
         loading,
+        getGoodsList,
       };
     },
   });
