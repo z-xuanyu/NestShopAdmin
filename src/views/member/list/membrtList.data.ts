@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-11 16:09:00
- * @LastEditTime: 2021-08-12 11:00:07
+ * @LastEditTime: 2021-09-02 11:43:06
  * @Description: Modify here please
  */
 import { BasicColumn } from '/@/components/Table';
@@ -22,6 +22,13 @@ export const columns: BasicColumn[] = [
     dataIndex: 'phone',
     width: 160,
     align: 'left',
+  },
+  {
+    title: '会员头像',
+    dataIndex: 'avatarImg',
+    width: 80,
+    align: 'center',
+    slots: { customRender: 'avatarImg' },
   },
   {
     title: '创建时间',

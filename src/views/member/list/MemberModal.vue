@@ -4,14 +4,14 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-07-20 10:38:11
- * @LastEditTime: 2021-08-31 10:44:48
+ * @LastEditTime: 2021-09-02 11:35:56
  * @Description: Modify here please
 -->
 <template>
   <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
     <BasicForm @register="registerForm">
       <!-- 头像 -->
-      <template #avatar="{ model, field }">
+      <template #avatarImg="{ model, field }">
         <a-upload
           v-model:file-list="fileList"
           name="avatar"
@@ -34,35 +34,29 @@
   </BasicModal>
 </template>
 <script lang="ts">
-  import { defineComponent, ref, computed, unref, reactive, toRefs } from 'vue';
+  import { defineComponent, ref, computed, unref } from 'vue';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { BasicForm, useForm } from '/@/components/Form/index';
   import { formSchema } from './membrtList.data';
   import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
-  import { addAdmin, updateAdmin, uploadAvatar } from '/@/api/system/account';
-  import { CheckboxGroup, Row, Col, Checkbox, Upload } from 'ant-design-vue';
+  import { uploadAvatar } from '/@/api/system/account';
+  import { addMember, updateMember } from '/@/api/member';
+  import { Upload } from 'ant-design-vue';
   import { useMessage } from '/@/hooks/web/useMessage';
-  import { FileInfo, FileItem } from './type';
+  import { FileInfo, FileItem } from '/#/axios';
   export default defineComponent({
     name: 'AccountModal',
     components: {
       BasicModal,
       BasicForm,
-      [CheckboxGroup.name]: CheckboxGroup,
-      [Row.name]: Row,
-      [Col.name]: Col,
-      [Checkbox.name]: Checkbox,
       LoadingOutlined,
       PlusOutlined,
       [Upload.name]: Upload,
     },
     emits: ['success', 'register'],
     setup(_, { emit }) {
+      let memberId = '';
       const { createMessage } = useMessage();
-      const state = reactive({
-        adminId: '',
-        roleList: [] as any,
-      });
       const isUpdate = ref(true);
       const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
         labelWidth: 80,
@@ -74,7 +68,7 @@
         setModalProps({ confirmLoading: false });
         isUpdate.value = !!data?.isUpdate;
         if (unref(isUpdate)) {
-          state.adminId = data.record._id;
+          memberId = data.record._id;
           setFieldsValue({
             ...data.record,
           });
@@ -93,15 +87,10 @@
           setModalProps({ confirmLoading: true });
           // 新增
           if (!unref(isUpdate)) {
-            await addAdmin(values);
+            await addMember(values);
           } else {
             // 编辑
-            const data = {
-              name: values.name,
-              email: values.email,
-              roleIds: values.roleIds,
-            };
-            await updateAdmin(state.adminId, data);
+            await updateMember(memberId, values);
           }
           closeModal();
           emit('success');
@@ -113,7 +102,7 @@
       const handleImageUploadRequest = async (file) => {
         const res = await uploadAvatar({ file: file.file });
         setFieldsValue({
-          avatar: res.data.result.url,
+          avatarImg: res.data.result.url,
         });
       };
       // 图片上传
@@ -146,7 +135,6 @@
         }
       };
       return {
-        ...toRefs(state),
         registerModal,
         registerForm,
         getTitle,

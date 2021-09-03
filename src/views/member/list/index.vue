@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-11 15:53:23
- * @LastEditTime: 2021-08-12 14:45:06
+ * @LastEditTime: 2021-09-02 11:40:17
  * @Description: Modify here please
 -->
 <template>
@@ -12,6 +12,9 @@
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button type="primary" @click="handleCreate"> 新增会员 </a-button>
+      </template>
+      <template #avatarImg="{ record }">
+        <TableImg :size="50" :imgList="[record.avatarImg]" />
       </template>
       <template #action="{ record }">
         <TableAction
@@ -38,24 +41,27 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { BasicTable, useTable, TableAction } from '/@/components/Table';
+  import { BasicTable, useTable, TableAction, TableImg } from '/@/components/Table';
   import { useModal } from '/@/components/Modal';
   import MemberModal from './MemberModal.vue';
-  import { getMemberList } from '/@/api/member';
+  import { getMembers, delMember } from '/@/api/member';
   import { columns, searchFormSchema } from './membrtList.data';
+  import { useMessage } from '/@/hooks/web/useMessage';
   export default defineComponent({
     name: 'MemberList',
     components: {
       BasicTable,
       TableAction,
       MemberModal,
+      TableImg,
     },
     setup() {
+      const { createMessage } = useMessage();
       const [registerModal, { openModal }] = useModal();
 
       const [registerTable, { reload }] = useTable({
         title: '账号列表',
-        api: getMemberList,
+        api: getMembers,
         columns,
         formConfig: {
           labelWidth: 120,
@@ -93,9 +99,10 @@
       };
 
       // 删除
-      const handleDelete = (record: Recordable) => {
-        console.log(record._id);
+      const handleDelete = async (record: Recordable) => {
+        await delMember(record._id);
         handleSuccess();
+        createMessage.success('删除成功!');
       };
 
       const handleSuccess = () => {
