@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-11 15:53:23
- * @LastEditTime: 2021-09-02 11:40:17
+ * @LastEditTime: 2021-09-03 15:10:28
  * @Description: Modify here please
 -->
 <template>
@@ -60,7 +60,7 @@
       const [registerModal, { openModal }] = useModal();
 
       const [registerTable, { reload }] = useTable({
-        title: '账号列表',
+        title: '会员列表',
         api: getMembers,
         columns,
         formConfig: {
