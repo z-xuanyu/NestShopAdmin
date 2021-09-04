@@ -4,25 +4,17 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-07-20 10:38:11
- * @LastEditTime: 2021-08-13 14:26:49
+ * @LastEditTime: 2021-09-02 11:35:56
  * @Description: Modify here please
 -->
 <template>
   <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
     <BasicForm @register="registerForm">
-      <template #roleIds="{ model, field }">
-        <a-checkbox-group class="w-full" v-model:value="model[field]">
-          <a-row>
-            <a-col :span="8" v-for="item in roleList" :key="item._id">
-              <a-checkbox :value="item._id">{{ item.name }}</a-checkbox>
-            </a-col>
-          </a-row>
-        </a-checkbox-group>
-      </template>
       <!-- 头像 -->
-      <template #avatar="{ model, field }">
+      <template #avatarImg="{ model, field }">
         <a-upload
           v-model:file-list="fileList"
+          name="avatar"
           list-type="picture-card"
           class="avatar-uploader"
           :show-upload-list="false"
@@ -30,7 +22,7 @@
           :before-upload="beforeUpload"
           @change="handleUploadChange"
         >
-          <img v-if="model[field]" :src="model[field]" />
+          <img v-if="model[field]" :src="model[field]" alt="avatar" />
           <div v-else>
             <loading-outlined v-if="loading" />
             <plus-outlined v-else />
@@ -42,35 +34,29 @@
   </BasicModal>
 </template>
 <script lang="ts">
-  import { defineComponent, ref, computed, unref, reactive, toRefs } from 'vue';
+  import { defineComponent, ref, computed, unref } from 'vue';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { BasicForm, useForm } from '/@/components/Form/index';
-  import { formSchema } from './account.data';
+  import { formSchema } from './membrtList.data';
   import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
-  import { addAdmin, updateAdmin, getAccountRole, uploadAvatar } from '/@/api/system/account';
-  import { CheckboxGroup, Row, Col, Checkbox, Upload } from 'ant-design-vue';
+  import { uploadAvatar } from '/@/api/system/account';
+  import { addMember, updateMember } from '/@/api/member';
+  import { Upload } from 'ant-design-vue';
   import { useMessage } from '/@/hooks/web/useMessage';
-  import { FileInfo, FileItem } from './type';
+  import { FileInfo, FileItem } from '/#/axios';
   export default defineComponent({
     name: 'AccountModal',
     components: {
       BasicModal,
       BasicForm,
-      [CheckboxGroup.name]: CheckboxGroup,
-      [Row.name]: Row,
-      [Col.name]: Col,
-      [Checkbox.name]: Checkbox,
       LoadingOutlined,
       PlusOutlined,
       [Upload.name]: Upload,
     },
     emits: ['success', 'register'],
     setup(_, { emit }) {
+      let memberId = '';
       const { createMessage } = useMessage();
-      const state = reactive({
-        adminId: '',
-        roleList: [] as any,
-      });
       const isUpdate = ref(true);
       const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
         labelWidth: 80,
@@ -81,13 +67,10 @@
         resetFields();
         setModalProps({ confirmLoading: false });
         isUpdate.value = !!data?.isUpdate;
-        const roleListRes = await getAccountRole();
-        state.roleList = roleListRes;
         if (unref(isUpdate)) {
-          state.adminId = data.record._id;
+          memberId = data.record._id;
           setFieldsValue({
             ...data.record,
-            roleIds: data.record.roleIds.map((item: any) => item._id),
           });
         }
         // 如果编辑不显示密码输入框
@@ -97,22 +80,17 @@
           show: !unref(isUpdate),
         });
       });
-      const getTitle = computed(() => (!unref(isUpdate) ? '新增账号' : '编辑账号'));
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增会员' : '编辑会员'));
       async function handleSubmit() {
         try {
           const values = await validate();
           setModalProps({ confirmLoading: true });
           // 新增
           if (!unref(isUpdate)) {
-            await addAdmin(values);
+            await addMember(values);
           } else {
             // 编辑
-            const data = {
-              name: values.name,
-              email: values.email,
-              roleIds: values.roleIds,
-            };
-            await updateAdmin(state.adminId, data);
+            await updateMember(memberId, values);
           }
           closeModal();
           emit('success');
@@ -124,7 +102,7 @@
       const handleImageUploadRequest = async (file) => {
         const res = await uploadAvatar({ file: file.file });
         setFieldsValue({
-          avatar: res.data.result.url,
+          avatarImg: res.data.result.url,
         });
       };
       // 图片上传
@@ -157,7 +135,6 @@
         }
       };
       return {
-        ...toRefs(state),
         registerModal,
         registerForm,
         getTitle,

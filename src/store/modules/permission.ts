@@ -153,36 +153,6 @@ export const usePermissionStore = defineStore({
           // !Simulate to obtain permission codes from the background,
           // this function may only need to be executed once, and the actual project can be put at the right time by itself
           let routeList: AppRouteRecordRaw[] = [
-            // {
-            //   path: '/dashboard',
-            //   name: 'Dashboard',
-            //   component: 'LAYOUT',
-            //   redirect: 'dashboard/analysis',
-            //   meta: {
-            //     orderNo: 10,
-            //     title: 'routes.dashboard.dashboard',
-            //     icon: 'ion:grid-outline',
-            //   },
-            //   children: [
-            //     {
-            //       path: 'analysis',
-            //       name: 'Analysis',
-            //       component: '/dashboard/analysis/index',
-            //       meta: {
-            //         affix: false,
-            //         title: 'routes.dashboard.analysis',
-            //       },
-            //     },
-            //     {
-            //       path: 'workbench',
-            //       name: 'Workbench',
-            //       component: '/dashboard/workbench/index',
-            //       meta: {
-            //         title: 'routes.dashboard.workbench',
-            //       },
-            //     },
-            //   ],
-            // },
             {
               path: '/dashboard',
               name: 'Welcome',

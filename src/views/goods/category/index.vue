@@ -3,24 +3,18 @@
  * @LastEditors: xuanyu
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
- * @Date: 2021-07-19 12:10:57
- * @LastEditTime: 2021-08-11 11:53:53
+ * @Date: 2021-08-12 14:47:31
+ * @LastEditTime: 2021-08-13 16:38:09
  * @Description: Modify here please
 -->
 <template>
-  <div class="account-page">
-    <BasicTable @register="registerTable" :rowSelection="{ type: 'checkbox' }">
+  <div class="goods-category">
+    <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增账号 </a-button>
+        <a-button type="primary" @click="handleCreate"> 新增分类 </a-button>
       </template>
-      <template #roleIds="{ record }">
-        <a-tag
-          color="#2db7f5"
-          style="margin-right: 10px"
-          v-for="item in record.roleIds"
-          :key="item._id"
-          >{{ item.name }}</a-tag
-        >
+      <template #pic="{ record }">
+        <TableImg :size="40" :imgList="[record.pic]" />
       </template>
       <template #action="{ record }">
         <TableAction
@@ -41,28 +35,32 @@
         />
       </template>
     </BasicTable>
-    <AccountModal @register="registerModal" @success="handleSuccess" />
+    <CategoryModal @register="registerModal" @success="handleSuccess" />
   </div>
 </template>
+
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import AccountModal from './AccountModal.vue';
-  import { columns, searchFormSchema } from './account.data';
-  import { getAdminList, delAdmin } from '/@/api/system/account';
+  import { BasicTable, useTable, TableAction, TableImg } from '/@/components/Table';
+  import { columns, searchFormSchema } from './category.data';
+  import { getGoodsCategories, delCategory } from '/@/api/goods';
   import { useModal } from '/@/components/Modal';
   import { useMessage } from '/@/hooks/web/useMessage';
-  import { Tag } from 'ant-design-vue';
+  import CategoryModal from './CategoryModal.vue';
   export default defineComponent({
-    name: 'Account',
-    components: { BasicTable, AccountModal, TableAction, [Tag.name]: Tag },
+    name: 'GoodsCategory',
+    components: {
+      BasicTable,
+      TableAction,
+      TableImg,
+      CategoryModal,
+    },
     setup() {
       const { createMessage } = useMessage();
       const [registerModal, { openModal }] = useModal();
-
       const [registerTable, { reload }] = useTable({
-        title: '账号列表',
-        api: getAdminList,
+        title: '商品分类',
+        api: getGoodsCategories,
         columns,
         formConfig: {
           labelWidth: 120,
@@ -71,7 +69,7 @@
         pagination: true,
         striped: false,
         useSearchForm: true,
-        showTableSetting: false,
+        showTableSetting: true,
         bordered: true,
         showIndexColumn: false,
         canResize: false,
@@ -102,23 +100,20 @@
       };
       // 处理删除
       const handleDelete = async (record: Recordable) => {
-        await delAdmin(record._id);
-        handleSuccess();
+        await delCategory(record._id);
+        reload();
         createMessage.success('删除成功!');
       };
       return {
-        handleEdit,
-        handleDelete,
-        registerModal,
-        handleSuccess,
-        handleCreate,
         registerTable,
+        handleEdit,
+        handleCreate,
+        handleDelete,
+        handleSuccess,
+        registerModal,
       };
     },
   });
 </script>
-<style lang="less" scoped>
-  .account-page {
-    padding: 20px;
-  }
-</style>
+
+<style></style>

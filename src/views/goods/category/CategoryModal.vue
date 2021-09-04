@@ -4,23 +4,14 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-07-20 10:38:11
- * @LastEditTime: 2021-08-13 14:26:49
+ * @LastEditTime: 2021-08-13 14:41:04
  * @Description: Modify here please
 -->
 <template>
   <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
     <BasicForm @register="registerForm">
-      <template #roleIds="{ model, field }">
-        <a-checkbox-group class="w-full" v-model:value="model[field]">
-          <a-row>
-            <a-col :span="8" v-for="item in roleList" :key="item._id">
-              <a-checkbox :value="item._id">{{ item.name }}</a-checkbox>
-            </a-col>
-          </a-row>
-        </a-checkbox-group>
-      </template>
-      <!-- 头像 -->
-      <template #avatar="{ model, field }">
+      <!-- 分类图 -->
+      <template #pic="{ model, field }">
         <a-upload
           v-model:file-list="fileList"
           list-type="picture-card"
@@ -34,7 +25,7 @@
           <div v-else>
             <loading-outlined v-if="loading" />
             <plus-outlined v-else />
-            <div class="ant-upload-text">头像</div>
+            <div class="ant-upload-text">分类图</div>
           </div>
         </a-upload>
       </template>
@@ -44,33 +35,29 @@
 <script lang="ts">
   import { defineComponent, ref, computed, unref, reactive, toRefs } from 'vue';
   import { BasicModal, useModalInner } from '/@/components/Modal';
-  import { BasicForm, useForm } from '/@/components/Form/index';
-  import { formSchema } from './account.data';
   import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
-  import { addAdmin, updateAdmin, getAccountRole, uploadAvatar } from '/@/api/system/account';
-  import { CheckboxGroup, Row, Col, Checkbox, Upload } from 'ant-design-vue';
+  import { Upload } from 'ant-design-vue';
+  import { BasicForm, useForm } from '/@/components/Form/index';
+  import { formSchema } from './category.data';
+  import { getGoodsCategories, addCategory, updateCategory } from '/@/api/goods';
+  import { uploadAvatar } from '/@/api/system/account';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { FileInfo, FileItem } from './type';
   export default defineComponent({
-    name: 'AccountModal',
+    name: 'CategoryModal',
     components: {
       BasicModal,
       BasicForm,
-      [CheckboxGroup.name]: CheckboxGroup,
-      [Row.name]: Row,
-      [Col.name]: Col,
-      [Checkbox.name]: Checkbox,
-      LoadingOutlined,
       PlusOutlined,
+      LoadingOutlined,
       [Upload.name]: Upload,
     },
     emits: ['success', 'register'],
     setup(_, { emit }) {
-      const { createMessage } = useMessage();
       const state = reactive({
-        adminId: '',
-        roleList: [] as any,
+        categoryId: '',
       });
+      const { createMessage } = useMessage();
       const isUpdate = ref(true);
       const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
         labelWidth: 80,
@@ -80,39 +67,34 @@
       const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
         resetFields();
         setModalProps({ confirmLoading: false });
+
         isUpdate.value = !!data?.isUpdate;
-        const roleListRes = await getAccountRole();
-        state.roleList = roleListRes;
         if (unref(isUpdate)) {
-          state.adminId = data.record._id;
+          state.categoryId = data.record._id;
           setFieldsValue({
             ...data.record,
-            roleIds: data.record.roleIds.map((item: any) => item._id),
           });
         }
-        // 如果编辑不显示密码输入框
+
+        const categoryTree = await getGoodsCategories();
         updateSchema({
-          field: 'password',
-          required: !unref(isUpdate),
-          show: !unref(isUpdate),
+          field: 'parentId',
+          componentProps: { treeData: categoryTree.items },
         });
       });
-      const getTitle = computed(() => (!unref(isUpdate) ? '新增账号' : '编辑账号'));
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增分类' : '编辑分类'));
       async function handleSubmit() {
         try {
           const values = await validate();
           setModalProps({ confirmLoading: true });
           // 新增
           if (!unref(isUpdate)) {
-            await addAdmin(values);
+            await addCategory(values);
+            createMessage.success('添加成功!');
           } else {
             // 编辑
-            const data = {
-              name: values.name,
-              email: values.email,
-              roleIds: values.roleIds,
-            };
-            await updateAdmin(state.adminId, data);
+            await updateCategory(state.categoryId, values);
+            createMessage.success('编辑成功!');
           }
           closeModal();
           emit('success');
@@ -120,11 +102,12 @@
           setModalProps({ confirmLoading: false });
         }
       }
+
       // 图片上传自定义请求
       const handleImageUploadRequest = async (file) => {
         const res = await uploadAvatar({ file: file.file });
         setFieldsValue({
-          avatar: res.data.result.url,
+          pic: res.data.result.url,
         });
       };
       // 图片上传
@@ -162,11 +145,11 @@
         registerForm,
         getTitle,
         handleSubmit,
-        beforeUpload,
         handleUploadChange,
         handleImageUploadRequest,
-        fileList,
+        beforeUpload,
         loading,
+        fileList,
       };
     },
   });

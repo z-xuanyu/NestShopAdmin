@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-07-20 10:39:58
- * @LastEditTime: 2021-07-23 16:44:45
+ * @LastEditTime: 2021-08-26 14:46:05
  * @Description: Modify here please
  */
 import { BasicColumn } from '/@/components/Table';
@@ -28,8 +28,8 @@ export const columns: BasicColumn[] = [
     dataIndex: 'createdAt',
     width: 180,
     customRender: ({ record }) => {
-      return dayjs(record.createdAt).format('YYYY-MM-DD HH:mm')
-    }
+      return dayjs(record.createdAt).format('YYYY-MM-DD HH:mm');
+    },
   },
 ];
 
@@ -53,7 +53,7 @@ export const formSchema: FormSchema[] = [
     required: true,
     componentProps: {
       placeholder: '请输入角色名称',
-    }
+    },
   },
   {
     field: 'description',
@@ -62,12 +62,12 @@ export const formSchema: FormSchema[] = [
     required: true,
     componentProps: {
       placeholder: '请输入角色的描述',
-    }
+    },
   },
   {
     field: 'menuIds',
     label: '菜单',
     component: 'Input',
-    slot: 'menuIds'
-  }
+    slot: 'menuIds',
+  },
 ];

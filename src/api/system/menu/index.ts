@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-07-19 15:09:21
- * @LastEditTime: 2021-07-19 16:29:16
+ * @LastEditTime: 2021-08-11 15:15:00
  * @Description: Modify here please
  */
 import { MenuItem } from './type';
@@ -13,7 +13,7 @@ import { defHttp } from '/@/utils/http/axios';
 enum Api {
   MenuList = '/menu/list',
   Menu = '/menu',
-  Tree = '/menu/tree'
+  Tree = '/menu/tree',
 }
 
 //  获取菜单列表
@@ -21,12 +21,11 @@ export function getMenuList() {
   return defHttp.get<MenuItem>({ url: Api.MenuList });
 }
 
-
 // 获取菜单树结构
-export function getMenuTree(){
+export function getMenuTree() {
   return defHttp.get({
-    url: Api.Tree
-  })
+    url: Api.Tree,
+  });
 }
 
 //  添加菜单

@@ -3,24 +3,18 @@
  * @LastEditors: xuanyu
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
- * @Date: 2021-07-19 12:10:57
- * @LastEditTime: 2021-08-11 11:53:53
+ * @Date: 2021-08-11 15:53:23
+ * @LastEditTime: 2021-09-03 15:10:28
  * @Description: Modify here please
 -->
 <template>
-  <div class="account-page">
-    <BasicTable @register="registerTable" :rowSelection="{ type: 'checkbox' }">
+  <div class="member-list">
+    <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增账号 </a-button>
+        <a-button type="primary" @click="handleCreate"> 新增会员 </a-button>
       </template>
-      <template #roleIds="{ record }">
-        <a-tag
-          color="#2db7f5"
-          style="margin-right: 10px"
-          v-for="item in record.roleIds"
-          :key="item._id"
-          >{{ item.name }}</a-tag
-        >
+      <template #avatarImg="{ record }">
+        <TableImg :size="50" :imgList="[record.avatarImg]" />
       </template>
       <template #action="{ record }">
         <TableAction
@@ -41,28 +35,33 @@
         />
       </template>
     </BasicTable>
-    <AccountModal @register="registerModal" @success="handleSuccess" />
+    <MemberModal @register="registerModal" @success="handleSuccess" />
   </div>
 </template>
+
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import AccountModal from './AccountModal.vue';
-  import { columns, searchFormSchema } from './account.data';
-  import { getAdminList, delAdmin } from '/@/api/system/account';
+  import { BasicTable, useTable, TableAction, TableImg } from '/@/components/Table';
   import { useModal } from '/@/components/Modal';
+  import MemberModal from './MemberModal.vue';
+  import { getMembers, delMember } from '/@/api/member';
+  import { columns, searchFormSchema } from './membrtList.data';
   import { useMessage } from '/@/hooks/web/useMessage';
-  import { Tag } from 'ant-design-vue';
   export default defineComponent({
-    name: 'Account',
-    components: { BasicTable, AccountModal, TableAction, [Tag.name]: Tag },
+    name: 'MemberList',
+    components: {
+      BasicTable,
+      TableAction,
+      MemberModal,
+      TableImg,
+    },
     setup() {
       const { createMessage } = useMessage();
       const [registerModal, { openModal }] = useModal();
 
       const [registerTable, { reload }] = useTable({
-        title: '账号列表',
-        api: getAdminList,
+        title: '会员列表',
+        api: getMembers,
         columns,
         formConfig: {
           labelWidth: 120,
@@ -71,7 +70,7 @@
         pagination: true,
         striped: false,
         useSearchForm: true,
-        showTableSetting: false,
+        showTableSetting: true,
         bordered: true,
         showIndexColumn: false,
         canResize: false,
@@ -83,42 +82,42 @@
           fixed: undefined,
         },
       });
-      // 编辑
-      const handleEdit = (record: Recordable) => {
-        openModal(true, {
-          record,
-          isUpdate: true,
-        });
-      };
-      // 添加
+
+      // 添加会员
       const handleCreate = () => {
         openModal(true, {
           isUpdate: false,
         });
       };
 
-      const handleSuccess = () => {
-        reload();
+      // 编辑会员
+      const handleEdit = (record: Recordable) => {
+        openModal(true, {
+          record,
+          isUpdate: true,
+        });
       };
-      // 处理删除
+
+      // 删除
       const handleDelete = async (record: Recordable) => {
-        await delAdmin(record._id);
+        await delMember(record._id);
         handleSuccess();
         createMessage.success('删除成功!');
       };
+
+      const handleSuccess = () => {
+        reload();
+      };
       return {
+        registerModal,
+        registerTable,
+        handleCreate,
         handleEdit,
         handleDelete,
-        registerModal,
         handleSuccess,
-        handleCreate,
-        registerTable,
       };
     },
   });
 </script>
-<style lang="less" scoped>
-  .account-page {
-    padding: 20px;
-  }
-</style>
+
+<style></style>

@@ -1,3 +1,12 @@
+/*
+ * @Author: xuanyu
+ * @LastEditors: xuanyu
+ * @email: 969718197@qq.com
+ * @github: https://github.com/z-xuanyu
+ * @Date: 2021-08-04 14:54:25
+ * @LastEditTime: 2021-08-11 15:15:10
+ * @Description: Modify here please
+ */
 /**
  * @description: Login interface parameters
  */
@@ -15,8 +24,8 @@ export interface RoleInfo {
  * @description: Login interface return value
  */
 export interface LoginResultModel {
-  code: number,
-  message:string,
+  code: number;
+  message: string;
   token: string;
   userInfo: GetUserInfoModel;
 }

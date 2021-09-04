@@ -1,3 +1,12 @@
+/*
+ * @Author: xuanyu
+ * @LastEditors: xuanyu
+ * @email: 969718197@qq.com
+ * @github: https://github.com/z-xuanyu
+ * @Date: 2021-08-04 14:54:26
+ * @LastEditTime: 2021-08-31 10:55:43
+ * @Description: Modify here please
+ */
 import type { ErrorMessageMode } from '/#/axios';
 import { useMessage } from '/@/hooks/web/useMessage';
 import { useI18n } from '/@/hooks/web/useI18n';
@@ -19,14 +28,14 @@ export function checkStatus(
   const { t } = useI18n();
   const userStore = useUserStoreWithOut();
   let errMessage = '';
-
+  console.log(status, '状态码');
   switch (status) {
     case 400:
       errMessage = `${msg}`;
       break;
-    // 401: Not logged in
-    // Jump to the login page if not logged in, and carry the path of the current page
-    // Return to the current page after successful login. This step needs to be operated on the login page.
+    // 401: 未登录
+    // 如果未登录，跳转到登录页面，并携带当前页面的路径
+    // 成功登录后返回当前页面。此步骤需要在登录页面上操作。
     case 401:
       errMessage = t('sys.api.errMsg401');
       if (stp === SessionTimeoutProcessingEnum.PAGE_COVERAGE) {

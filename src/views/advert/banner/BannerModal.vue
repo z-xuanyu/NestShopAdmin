@@ -3,26 +3,18 @@
  * @LastEditors: xuanyu
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
- * @Date: 2021-07-20 10:38:11
- * @LastEditTime: 2021-08-13 14:26:49
+ * @Date: 2021-09-01 14:17:59
+ * @LastEditTime: 2021-09-01 17:52:42
  * @Description: Modify here please
 -->
 <template>
   <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
     <BasicForm @register="registerForm">
-      <template #roleIds="{ model, field }">
-        <a-checkbox-group class="w-full" v-model:value="model[field]">
-          <a-row>
-            <a-col :span="8" v-for="item in roleList" :key="item._id">
-              <a-checkbox :value="item._id">{{ item.name }}</a-checkbox>
-            </a-col>
-          </a-row>
-        </a-checkbox-group>
-      </template>
-      <!-- 头像 -->
-      <template #avatar="{ model, field }">
+      <!-- 图片 -->
+      <template #pic="{ model, field }">
         <a-upload
           v-model:file-list="fileList"
+          name="avatar"
           list-type="picture-card"
           class="avatar-uploader"
           :show-upload-list="false"
@@ -30,104 +22,94 @@
           :before-upload="beforeUpload"
           @change="handleUploadChange"
         >
-          <img v-if="model[field]" :src="model[field]" />
+          <img v-if="model[field]" :src="model[field]" alt="avatar" />
           <div v-else>
             <loading-outlined v-if="loading" />
             <plus-outlined v-else />
-            <div class="ant-upload-text">头像</div>
+            <div class="ant-upload-text">图片</div>
           </div>
         </a-upload>
+      </template>
+      <!-- 关联商品 -->
+      <template #commodityId="{ model, field }">
+        <ApiSelect
+          :api="getGoodsList"
+          showSearch
+          placeholder="请选择关联商品"
+          v-model:value="model[field]"
+          :filterOption="false"
+          resultField="items"
+          labelField="name"
+          valueField="_id"
+        />
       </template>
     </BasicForm>
   </BasicModal>
 </template>
 <script lang="ts">
-  import { defineComponent, ref, computed, unref, reactive, toRefs } from 'vue';
+  import { defineComponent, ref, unref, computed } from 'vue';
   import { BasicModal, useModalInner } from '/@/components/Modal';
-  import { BasicForm, useForm } from '/@/components/Form/index';
-  import { formSchema } from './account.data';
-  import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
-  import { addAdmin, updateAdmin, getAccountRole, uploadAvatar } from '/@/api/system/account';
-  import { CheckboxGroup, Row, Col, Checkbox, Upload } from 'ant-design-vue';
+  import { BasicForm, useForm, ApiSelect } from '/@/components/Form/index';
+  import { formSchema } from './banner.data';
+  import { uploadAvatar } from '/@/api/system/account';
+  import { getGoodsList } from '/@/api/goods';
+  import { addBanner, updateBanner } from '/@/api/banner';
   import { useMessage } from '/@/hooks/web/useMessage';
-  import { FileInfo, FileItem } from './type';
+  import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
+  import { Upload } from 'ant-design-vue';
+  import { FileInfo, FileItem } from '/#/axios';
   export default defineComponent({
-    name: 'AccountModal',
+    name: 'BannerModal',
     components: {
       BasicModal,
       BasicForm,
-      [CheckboxGroup.name]: CheckboxGroup,
-      [Row.name]: Row,
-      [Col.name]: Col,
-      [Checkbox.name]: Checkbox,
-      LoadingOutlined,
       PlusOutlined,
+      LoadingOutlined,
+      ApiSelect,
       [Upload.name]: Upload,
     },
     emits: ['success', 'register'],
     setup(_, { emit }) {
-      const { createMessage } = useMessage();
-      const state = reactive({
-        adminId: '',
-        roleList: [] as any,
-      });
       const isUpdate = ref(true);
-      const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
+      const { createMessage } = useMessage();
+      let bannerId = ''; // bannerId
+      // 表单配置
+      const [registerForm, { resetFields, setFieldsValue, validate, updateSchema }] = useForm({
         labelWidth: 80,
         schemas: formSchema,
         showActionButtonGroup: false,
       });
+      // Modal
       const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
         resetFields();
         setModalProps({ confirmLoading: false });
         isUpdate.value = !!data?.isUpdate;
-        const roleListRes = await getAccountRole();
-        state.roleList = roleListRes;
+        // 编辑
         if (unref(isUpdate)) {
-          state.adminId = data.record._id;
+          updateSchema({
+            field: 'commodityId',
+            show: data.record.type == 3 ? true : false,
+          });
+          updateSchema({
+            field: 'targetUrl',
+            show: data.record.type == 2 ? true : false,
+          });
+          bannerId = data.record._id;
           setFieldsValue({
             ...data.record,
-            roleIds: data.record.roleIds.map((item: any) => item._id),
+            commodityId: data.record.commodityId._id,
           });
         }
-        // 如果编辑不显示密码输入框
-        updateSchema({
-          field: 'password',
-          required: !unref(isUpdate),
-          show: !unref(isUpdate),
-        });
       });
-      const getTitle = computed(() => (!unref(isUpdate) ? '新增账号' : '编辑账号'));
-      async function handleSubmit() {
-        try {
-          const values = await validate();
-          setModalProps({ confirmLoading: true });
-          // 新增
-          if (!unref(isUpdate)) {
-            await addAdmin(values);
-          } else {
-            // 编辑
-            const data = {
-              name: values.name,
-              email: values.email,
-              roleIds: values.roleIds,
-            };
-            await updateAdmin(state.adminId, data);
-          }
-          closeModal();
-          emit('success');
-        } finally {
-          setModalProps({ confirmLoading: false });
-        }
-      }
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增Bnaner' : '编辑Banner'));
       // 图片上传自定义请求
       const handleImageUploadRequest = async (file) => {
         const res = await uploadAvatar({ file: file.file });
         setFieldsValue({
-          avatar: res.data.result.url,
+          pic: res.data.result.url,
         });
       };
-      // 图片上传
+      // 图片上传前处理文件类型和大小
       const beforeUpload = (file: FileItem) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
@@ -139,7 +121,6 @@
         }
         return isJpgOrPng && isLt2M;
       };
-
       const fileList = ref([]);
       const loading = ref<boolean>(false);
       // 上传改变
@@ -156,17 +137,37 @@
           createMessage.error('upload error');
         }
       };
+      // 提交
+      async function handleSubmit() {
+        try {
+          const values = await validate();
+          setModalProps({ confirmLoading: true });
+          // 新增
+          console.log(values);
+          if (!unref(isUpdate)) {
+            // 添加Banner
+            await addBanner(values);
+          } else {
+            // 编辑Banner
+            await updateBanner(bannerId, values);
+          }
+          closeModal();
+          emit('success');
+        } finally {
+          setModalProps({ confirmLoading: false });
+        }
+      }
       return {
-        ...toRefs(state),
-        registerModal,
         registerForm,
+        registerModal,
         getTitle,
         handleSubmit,
+        handleImageUploadRequest,
         beforeUpload,
         handleUploadChange,
-        handleImageUploadRequest,
         fileList,
         loading,
+        getGoodsList,
       };
     },
   });

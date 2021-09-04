@@ -1,3 +1,12 @@
+/*
+ * @Author: xuanyu
+ * @LastEditors: xuanyu
+ * @email: 969718197@qq.com
+ * @github: https://github.com/z-xuanyu
+ * @Date: 2021-08-04 14:54:27
+ * @LastEditTime: 2021-09-01 14:38:11
+ * @Description: Modify here please
+ */
 export type ErrorMessageMode = 'none' | 'modal' | 'message' | undefined;
 
 export interface RequestOptions {
@@ -41,4 +50,21 @@ export interface UploadFileParams {
   // file name
   filename?: string;
   [key: string]: any;
+}
+
+// 上传文件组类型
+export interface FileItem {
+  uid: string;
+  name?: string;
+  status?: string;
+  response?: string;
+  url?: string;
+  type?: string;
+  size: number;
+  originFileObj: any;
+}
+
+export interface FileInfo {
+  file: FileItem;
+  fileList: FileItem[];
 }
