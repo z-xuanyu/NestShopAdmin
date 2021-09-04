@@ -1,3 +1,4 @@
+import { any } from 'vue-types';
 import { isObject, isString } from '/@/utils/is';
 
 const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm';
@@ -35,7 +36,7 @@ export function formatRequestDate(params: Recordable) {
       if (value) {
         try {
           params[key] = isString(value) ? value.trim() : value;
-        } catch (error) {
+        } catch (error: any) {
           throw new Error(error);
         }
       }

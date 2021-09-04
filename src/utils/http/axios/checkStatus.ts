@@ -28,10 +28,9 @@ export function checkStatus(
   const { t } = useI18n();
   const userStore = useUserStoreWithOut();
   let errMessage = '';
-  console.log(status, '状态码');
   switch (status) {
     case 400:
-      errMessage = `${msg}`;
+      errMessage = `${msg? msg : '您的账号已被禁用！'}`;
       break;
     // 401: 未登录
     // 如果未登录，跳转到登录页面，并携带当前页面的路径
@@ -80,6 +79,7 @@ export function checkStatus(
   }
 
   if (errMessage) {
+    console.log(errMessage, '6454');
     if (errorMessageMode === 'modal') {
       createErrorModal({ title: t('sys.api.errorTip'), content: errMessage });
     } else if (errorMessageMode === 'message') {

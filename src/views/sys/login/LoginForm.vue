@@ -149,10 +149,9 @@
             toRaw({
               password: data.password,
               email: data.email,
-              // mode: 'none', //不要默认的错误提示
+              mode: 'none', //不要默认的错误提示
             })
           );
-          console.log(userInfo, '用户信息');
           if (userInfo) {
             notification.success({
               message: t('sys.login.loginSuccessTitle'),
@@ -161,7 +160,6 @@
             });
           }
         } catch (error) {
-          console.log(error, '出错了');
           // createErrorModal({
           //   title: t('sys.api.errorTip'),
           //   content: error.message || t('sys.api.networkExceptionMsg'),

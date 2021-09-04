@@ -7,7 +7,7 @@
  * @LastEditTime: 2021-07-19 16:16:13
  * @Description: Modify here please
  */
-
+import type { RouteMeta } from 'vue-router';
 export interface MenuItem {
   _id: string | number;
   name: string;
@@ -17,3 +17,14 @@ export interface MenuItem {
   sort: number;
   keepAlive: number;
 }
+export interface RouteItem {
+  path: string;
+  component: any;
+  meta: RouteMeta;
+  name?: string;
+  alias?: string | string[];
+  redirect?: string;
+  caseSensitive?: boolean;
+  children?: RouteItem[];
+}
+export type getRoleMenusResultModel = RouteItem[];
