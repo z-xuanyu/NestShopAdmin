@@ -161,6 +161,8 @@ export const usePermissionStore = defineStore({
                 title: 'routes.dashboard.analysis',
                 affix: true,
                 icon: 'bx:bx-home',
+                disabled: true,
+                hideMenu: true,
               },
             },
           ];
@@ -179,6 +181,7 @@ export const usePermissionStore = defineStore({
                       title: item.name,
                       icon: item.icon,
                       ignoreKeepAlive: Boolean(item.keepAlive),
+                      hideMenu: item.hideMenu,
                     },
                     component: 'LAYOUT',
                     redirect: `/${listTree(items, item._id)[0].path}`,
@@ -193,6 +196,7 @@ export const usePermissionStore = defineStore({
                       icon: item.icon,
                       orderNo: item.sort,
                       ignoreKeepAlive: Boolean(item.keepAlive),
+                      hideMenu: item.hideMenu,
                     },
                     component: `/${item.url}/index`,
                   };

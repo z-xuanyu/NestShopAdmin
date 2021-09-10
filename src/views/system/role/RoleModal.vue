@@ -1,8 +1,22 @@
+<!--
+ * @Author: xuanyu
+ * @LastEditors: xuanyu
+ * @email: 969718197@qq.com
+ * @github: https://github.com/z-xuanyu
+ * @Date: 2021-08-04 14:54:27
+ * @LastEditTime: 2021-09-10 15:56:26
+ * @Description: Modify here please
+-->
 <template>
   <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
     <BasicForm @register="registerForm">
       <template #menuIds="{ model, field }">
-        <BasicTree v-model:value="model[field]" :treeData="menuList" :replaceFields="{ title: 'name', key: '_id' }" checkable />
+        <BasicTree
+          v-model:value="model[field]"
+          :treeData="menuList"
+          :replaceFields="{ title: 'name', key: '_id' }"
+          checkable
+        />
       </template>
     </BasicForm>
   </BasicModal>
@@ -32,14 +46,14 @@
           .filter((item) => item.parentId == parentId)
           .map((item) => {
             return {
-                ...item,
-                children: list2tree(items, item._id),
-              };
+              ...item,
+              children: list2tree(items, item._id),
+            };
           });
       };
       const { createMessage } = useMessage();
       const state = reactive({
-        roleId:'',
+        roleId: '',
         menuList: [],
       });
       const isUpdate = ref(true);
@@ -52,9 +66,9 @@
       const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
         resetFields();
         setModalProps({ confirmLoading: false });
-        if(!state.menuList.length){
+        if (!state.menuList.length) {
           const menuListRes = await getMenuList();
-          state.menuList = list2tree(menuListRes)
+          state.menuList = list2tree(menuListRes);
         }
         isUpdate.value = !!data?.isUpdate;
         if (unref(isUpdate)) {
@@ -72,12 +86,12 @@
           setModalProps({ confirmLoading: true });
           // 新增
           if (!unref(isUpdate)) {
-            await addRole(values)
-            createMessage.success("添加成功")
+            await addRole(values);
+            createMessage.success('添加成功');
           } else {
             // 编辑
-            await updateRole(state.roleId, values)
-            createMessage.success("更新成功")
+            await updateRole(state.roleId, values);
+            createMessage.success('更新成功');
           }
           closeModal();
           emit('success');

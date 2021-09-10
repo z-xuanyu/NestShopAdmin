@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-07-20 10:39:58
- * @LastEditTime: 2021-08-13 10:18:20
+ * @LastEditTime: 2021-09-10 11:30:52
  * @Description: Modify here please
  */
 import { BasicColumn } from '/@/components/Table';
@@ -136,11 +136,23 @@ export const formSchema: FormSchema[] = [
     field: 'keepAlive',
     label: '是否缓存',
     component: 'RadioButtonGroup',
-    defaultValue: '0',
+    defaultValue: 0,
     componentProps: {
       options: [
         { label: '否', value: 0 },
         { label: '是', value: 1 },
+      ],
+    },
+  },
+  {
+    field: 'hideMenu',
+    label: '隐藏菜单',
+    component: 'RadioButtonGroup',
+    defaultValue: false,
+    componentProps: {
+      options: [
+        { label: '否', value: false },
+        { label: '是', value: true },
       ],
     },
   },

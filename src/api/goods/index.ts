@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-13 10:23:56
- * @LastEditTime: 2021-08-27 15:27:35
+ * @LastEditTime: 2021-09-07 12:18:11
  * @Description: Modify here please
  */
 
@@ -14,6 +14,7 @@ import { defHttp } from '/@/utils/http/axios';
 enum Api {
   Category = '/categories',
   Goods = '/commodities',
+  GoodsRating = '/commodities-rating',
 }
 
 //  获取商品分类列表
@@ -69,5 +70,13 @@ export function updateGoods(id: string, params: UpdateGodds) {
 export function delGoods(id: string) {
   return defHttp.delete({
     url: `${Api.Goods}/${id}`,
+  });
+}
+
+// 商品评价列表
+export function getGoodsCommoditiesRatings(params?: any) {
+  return defHttp.get({
+    url: Api.GoodsRating,
+    params,
   });
 }
