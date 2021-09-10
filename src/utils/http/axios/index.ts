@@ -179,7 +179,7 @@ const transform: AxiosTransform = {
         }
         return Promise.reject(error);
       }
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(error);
     }
 

@@ -18,7 +18,7 @@ import { ERROR_LOG_ROUTE, PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic';
 
 import { filter } from '/@/utils/helper/treeHelper';
 
-import { getMenuList } from '/@/api/sys/menu';
+import { getRoleMenus } from '/@/api/system/menu';
 // import { getPermCode } from '/@/api/sys/user';
 
 import { useMessage } from '/@/hooks/web/useMessage';
@@ -207,7 +207,7 @@ export const usePermissionStore = defineStore({
           try {
             // 改变权限码
             // this.changePermissionCode();
-            const menuRes = (await getMenuList()) as AppRouteRecordRaw[];
+            const menuRes = (await getRoleMenus()) as AppRouteRecordRaw[];
             const menuList = listTree(menuRes);
             routeList = routeList.concat(menuList);
           } catch (error) {

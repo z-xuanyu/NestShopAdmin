@@ -9,7 +9,7 @@
 -->
 <template>
   <div class="role-page">
-    <BasicTable @register="registerTable">
+    <BasicTable @register="registerTable" :rowSelection="{ type: 'checkbox' }">
       <template #toolbar>
         <a-button type="primary" @click="handleCreate"> 添加角色 </a-button>
       </template>
@@ -64,7 +64,7 @@
         pagination: true,
         striped: false,
         useSearchForm: true,
-        showTableSetting: true,
+        showTableSetting: false,
         bordered: true,
         showIndexColumn: false,
         canResize: false,

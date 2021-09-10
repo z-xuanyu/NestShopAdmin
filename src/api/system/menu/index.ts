@@ -7,15 +7,20 @@
  * @LastEditTime: 2021-08-11 15:15:00
  * @Description: Modify here please
  */
-import { MenuItem } from './type';
+import { getRoleMenusResultModel, MenuItem } from './type';
 import { defHttp } from '/@/utils/http/axios';
 
 enum Api {
   MenuList = '/menu/list',
   Menu = '/menu',
   Tree = '/menu/tree',
+  GetRoleMenus = '/menu/roleMenus',
 }
 
+// 获取权限菜单列表
+export function getRoleMenus() {
+  return defHttp.get<getRoleMenusResultModel>({ url: Api.GetRoleMenus });
+};
 //  获取菜单列表
 export function getMenuList() {
   return defHttp.get<MenuItem>({ url: Api.MenuList });

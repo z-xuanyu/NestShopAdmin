@@ -7,7 +7,7 @@
  * @LastEditTime: 2021-07-23 15:30:20
  * @Description: Modify here please
  */
-import { addRoleForm, updateRoleForm } from './type';
+import { AddRoleForm, GetRoleList, UpdateRoleForm } from './type';
 import { defHttp } from '/@/utils/http/axios';
 
 enum Api {
@@ -15,14 +15,15 @@ enum Api {
 }
 
 // 获取角色列表
-export function getAdminRole() {
+export function getAdminRole(params: GetRoleList) {
   return defHttp.get({
     url: Api.Role,
+    params
   });
 }
 
 // 添加角色
-export function addRole(params: addRoleForm) {
+export function addRole(params: AddRoleForm) {
   return defHttp.post({
     url: Api.Role,
     params,
@@ -32,7 +33,7 @@ export function addRole(params: addRoleForm) {
 /**
  * 更新角色信息
  */
-export function updateRole(id: string, params: updateRoleForm) {
+export function updateRole(id: string, params: UpdateRoleForm) {
   return defHttp.patch({
     url: `/${Api.Role}/${id}`,
     params,
