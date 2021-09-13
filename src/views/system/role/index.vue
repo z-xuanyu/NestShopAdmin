@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-07-19 12:10:57
- * @LastEditTime: 2021-07-19 14:13:01
+ * @LastEditTime: 2021-09-13 17:10:31
  * @Description: Modify here please
 -->
 <template>
@@ -48,7 +48,7 @@
     components: {
       BasicTable,
       TableAction,
-      RoleModal
+      RoleModal,
     },
     setup() {
       const { createMessage } = useMessage();
@@ -95,11 +95,18 @@
       };
       // 删除
       const handleDelete = async (record: Recordable) => {
-        await delRole(record._id)
+        await delRole(record._id);
         reload();
-        createMessage.success("删除成功")
+        createMessage.success('删除成功');
       };
-      return { registerTable,registerModal, handleCreate, handleSuccess, handleEdit, handleDelete };
+      return {
+        registerTable,
+        registerModal,
+        handleCreate,
+        handleSuccess,
+        handleEdit,
+        handleDelete,
+      };
     },
   });
 </script>

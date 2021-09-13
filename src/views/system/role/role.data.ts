@@ -4,11 +4,10 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-07-20 10:39:58
- * @LastEditTime: 2021-08-26 14:46:05
+ * @LastEditTime: 2021-09-13 17:10:14
  * @Description: Modify here please
  */
-import { BasicColumn } from '/@/components/Table';
-import { FormSchema } from '/@/components/Table';
+import { BasicColumn, FormSchema } from '/@/components/Table';
 import dayjs from 'dayjs';
 export const columns: BasicColumn[] = [
   {
