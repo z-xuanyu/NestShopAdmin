@@ -4,11 +4,10 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-13 16:19:45
- * @LastEditTime: 2021-08-27 16:32:17
+ * @LastEditTime: 2021-09-14 14:08:52
  * @Description: Modify here please
  */
-import { BasicColumn } from '/@/components/Table';
-import { FormSchema } from '/@/components/Table';
+import { BasicColumn, FormSchema } from '/@/components/Table';
 import dayjs from 'dayjs';
 import { Tinymce } from '/@/components/Tinymce/index';
 import { h } from 'vue';

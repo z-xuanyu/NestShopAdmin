@@ -1,3 +1,12 @@
+/*
+ * @Author: xuanyu
+ * @LastEditors: xuanyu
+ * @email: 969718197@qq.com
+ * @github: https://github.com/z-xuanyu
+ * @Date: 2021-08-04 14:54:26
+ * @LastEditTime: 2021-09-15 11:03:10
+ * @Description: Modify here please
+ */
 import '/@/design/index.less';
 import '/@/design/tailwind.css';
 // Register icon sprite
@@ -12,6 +21,7 @@ import { setupStore } from '/@/store';
 import { setupGlobDirectives } from '/@/directives';
 import { setupI18n } from '/@/locales/setupI18n';
 import { registerGlobComp } from '/@/components/registerGlobComp';
+import { setupVant } from '/@/plugins/vant';
 
 // Do not introduce on-demand in local development?
 // In the local development for introduce on-demand, the number of browser requests will increase by about 20%.
@@ -51,7 +61,8 @@ async function bootstrap() {
   // Mount when the route is ready
   // https://next.router.vuejs.org/api/#isready
   await router.isReady();
-
+  // 注冊vant插件
+  setupVant(app);
   app.mount('#app', true);
 }
 
