@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-13 10:23:56
- * @LastEditTime: 2021-09-07 12:18:11
+ * @LastEditTime: 2021-09-23 15:23:13
  * @Description: Modify here please
  */
 
@@ -15,6 +15,7 @@ enum Api {
   Category = '/categories',
   Goods = '/commodities',
   GoodsRating = '/commodities-rating',
+  GalleryList = '/library',
 }
 
 //  获取商品分类列表
@@ -77,6 +78,23 @@ export function delGoods(id: string) {
 export function getGoodsCommoditiesRatings(params?: any) {
   return defHttp.get({
     url: Api.GoodsRating,
+    params,
+  });
+}
+
+// 获取商品素材库列表
+export function getGoodsGalleryList(params?: any) {
+  return defHttp.get({
+    url: Api.GalleryList,
+    params,
+  });
+}
+
+// 删除图片素材
+export function delGoodsImg(params: any) {
+  console.log(params, 4564777777777);
+  return defHttp.delete({
+    url: Api.GalleryList,
     params,
   });
 }

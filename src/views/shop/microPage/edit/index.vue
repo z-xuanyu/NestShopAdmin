@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-09-14 14:21:37
- * @LastEditTime: 2021-09-15 17:50:34
+ * @LastEditTime: 2021-09-24 16:34:52
  * @Description: Modify here please
 -->
 <template>
@@ -108,7 +108,10 @@
         <div style="height: 80vh">
           <ScrollContainer>
             <div class="p-2" style="width: 380px">
-              <p>545454564</p>
+              <van-field label="标题" v-model="props.title" placeholder="请输入用户名" />
+              <van-field label="左侧文案" v-model="props.leftText" placeholder="请输入文案" />
+              <van-field label="右侧文案" v-model="props.rightText" placeholder="请输入文案" />
+              {{ props }}
             </div>
           </ScrollContainer>
         </div>
@@ -118,13 +121,15 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, toRefs } from 'vue';
+  import { defineComponent, reactive, toRefs, onMounted } from 'vue';
   import { ScrollContainer } from '/@/components/Container/index';
   import { Icon } from '/@/components/Icon';
   import draggable from 'vuedraggable';
   import { Card } from 'ant-design-vue';
   import components from './base-widgets';
   import ElementBlock from './renderBlock';
+  import { Field } from 'vant';
+  import { props } from './base-widgets/navbar/props.data';
   export default defineComponent({
     name: 'ShopMicroPageEdit',
     components: {
@@ -133,9 +138,40 @@
       draggable,
       Icon,
       ElementBlock,
+      [Field.name]: Field,
     },
     setup() {
-      console.log(Object.values(components), '组件信息');
+      // console.log(components, '组件信息');
+
+      // 请求数据
+      onMounted(() => {
+        let data = {
+          blocks: [
+            {
+              componentKey: 'navbar',
+              moduleName: 'baseWidgets',
+              props: {
+                title: '标题',
+              },
+              styles: {
+                display: 'flex',
+              },
+            },
+          ],
+        };
+        // const els = data.blocks.map((item) => {
+        //   return {
+        //     key: item.componentKey,
+        //     moduleName: item.moduleName,
+        //     label: '标题',
+        //     icon: 'subway:title',
+        //     render: components[item.componentKey].render(),
+        //     props: item.props,
+        //   };
+        // });
+        // state.list2 = els;
+        // console.log(els, '请求数据');
+      });
       const state = reactive({
         activeIndex: 0,
         actionWrapTop: 61,
@@ -160,6 +196,7 @@
         state.activeIndex = index;
         state.actionWrapTop = event.clientY - 250;
         console.log(index, '点到我了');
+        console.log(state.list2);
       };
       // 复制组件
       const handleComponentCopy = () => {
@@ -182,6 +219,7 @@
         handleComponentCopy,
         handleComponentMoveUp,
         handleComponentMoveDown,
+        props,
       };
     },
   });

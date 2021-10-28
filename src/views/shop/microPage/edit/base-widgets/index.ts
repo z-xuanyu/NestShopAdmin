@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-09-15 16:18:03
- * @LastEditTime: 2021-09-15 16:19:45
+ * @LastEditTime: 2021-09-24 16:30:00
  * @Description: Modify here please
  */
 const modules = import.meta.globEager('./*/index.tsx');
@@ -16,5 +16,5 @@ Object.keys(modules).forEach((key: string) => {
   components[name] = modules[key]?.default || modules[key];
 });
 
-console.log(components, 'base-widgets');
+// console.log(components, 'base-widgets');
 export default components;

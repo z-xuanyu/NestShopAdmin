@@ -1,3 +1,12 @@
+/*
+ * @Author: xuanyu
+ * @LastEditors: xuanyu
+ * @email: 969718197@qq.com
+ * @github: https://github.com/z-xuanyu
+ * @Date: 2021-08-04 14:54:26
+ * @LastEditTime: 2021-10-28 10:02:09
+ * @Description: Modify here please
+ */
 import type { GlobEnvConfig } from '/#/config';
 
 import { warn } from '/@/utils/log';
@@ -46,17 +55,17 @@ export function getAppEnvConfig() {
 }
 
 /**
- * @description: Development model
+ * @description: 开发环境
  */
 export const devMode = 'development';
 
 /**
- * @description: Production mode
+ * @description: 生产环境
  */
 export const prodMode = 'production';
 
 /**
- * @description: Get environment variables
+ * @description: 获取环境变量模式
  * @returns:
  * @example:
  */
@@ -65,7 +74,7 @@ export function getEnv(): string {
 }
 
 /**
- * @description: Is it a development mode
+ * @description: 开发环境下变量
  * @returns:
  * @example:
  */

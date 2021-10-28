@@ -25,7 +25,7 @@
     separator: { type: String, default: ',' },
     decimal: { type: String, default: '.' },
     /**
-     * font color
+     * 字体颜色
      */
     color: { type: String },
     /**

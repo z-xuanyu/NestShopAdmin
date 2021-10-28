@@ -4,7 +4,7 @@
  * @email: 969718197@qq.com
  * @github: https://github.com/z-xuanyu
  * @Date: 2021-08-04 14:54:26
- * @LastEditTime: 2021-09-15 11:03:10
+ * @LastEditTime: 2021-10-20 15:10:53
  * @Description: Modify here please
  */
 import '/@/design/index.less';
@@ -23,10 +23,10 @@ import { setupI18n } from '/@/locales/setupI18n';
 import { registerGlobComp } from '/@/components/registerGlobComp';
 import { setupVant } from '/@/plugins/vant';
 
-// Do not introduce on-demand in local development?
-// In the local development for introduce on-demand, the number of browser requests will increase by about 20%.
-// Which may slow down the browser refresh.
-// Therefore, all are introduced in local development, and only introduced on demand in the production environment
+// 在本地开发中不引入按需？
+// 在本地开发中引入点播，浏览器请求的数量会增加20%左右。
+// 这可能会减慢浏览器刷新速度。
+// 所以，都是在本地开发中引入的，在生产环境中才按需引入
 if (import.meta.env.DEV) {
   import('ant-design-vue/dist/antd.less');
 }
@@ -34,28 +34,28 @@ if (import.meta.env.DEV) {
 async function bootstrap() {
   const app = createApp(App);
 
-  // Configure store
+  // 配置store仓库
   setupStore(app);
 
-  // Initialize internal system configuration
+  // 初始化内部系统配置
   initAppConfigStore();
 
-  // Register global components
+  // 注册全局组件
   registerGlobComp(app);
 
-  // Multilingual configuration
+  // 多语言配置
   await setupI18n(app);
 
-  // Configure routing
+  // 配置路由
   setupRouter(app);
 
-  // router-guard
+  // 路由守卫
   setupRouterGuard(router);
 
-  // Register global directive
+  // 注册全局自定义指令
   setupGlobDirectives(app);
 
-  // Configure global error handling
+  // 配置全局错误处理
   setupErrorHandle(app);
 
   // Mount when the route is ready
